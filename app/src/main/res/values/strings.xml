@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">StudyFlow</string>
+    <string name="app_tagline">Study smarter. Stay organized. Achieve more.</string>
+    <string name="app_version_display">1.0.0</string>
+    <string name="widget_title">StudyFlow Today</string>
+    <string name="widget_description">Track today\'s pending homework, focus time, and study streak.</string>
+    <string name="nav_home">Home</string>
+    <string name="nav_planner">Planner</string>
+    <string name="nav_reminders">Reminders</string>
+    <string name="nav_study">Study</string>
+    <string name="nav_profile">Profile</string>
+    <string name="sign_in_google">Sign in with Google</string>
+    <string name="ai_disclaimer">AI responses are educational study aids and may contain mistakes. Always verify key facts with your textbook or teacher.</string>
+    <string name="alarm_reliability_notice">Android devices may delay background reminders under strict OEM battery optimization or when exact alarm permission is disabled. Keep Notifications and Alarms &amp; Reminders allowed for best reliability.</string>
+</resources>

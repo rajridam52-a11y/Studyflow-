@@ -1,0 +1,454 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "Student profile and preferences synced to Firestore.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "description": "Owner Firebase Auth UID" },
+        "displayName": { "type": "string" },
+        "email": { "type": "string" },
+        "gradeLevel": { "type": "string" },
+        "schoolName": { "type": "string" },
+        "academicYear": { "type": "string" },
+        "preferredStartHour": { "type": "integer" },
+        "preferredEndHour": { "type": "integer" },
+        "dailyGoalMinutes": { "type": "integer" },
+        "themeMode": { "type": "string", "enum": ["SYSTEM", "LIGHT", "DARK"] },
+        "accentPalette": { "type": "string", "enum": ["ROYAL_BLUE", "INDIGO", "TEAL", "PLUM"] },
+        "soundEnabled": { "type": "boolean" },
+        "vibrationEnabled": { "type": "boolean" },
+        "language": { "type": "string" },
+        "privacyPolicyAccepted": { "type": "boolean" },
+        "currentStreak": { "type": "integer" },
+        "longestStreak": { "type": "integer" },
+        "totalFocusMinutes": { "type": "integer" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Server timestamp via FieldValue.serverTimestamp()" },
+        "updatedAt": { "type": "string", "format": "date-time", "description": "Server timestamp via FieldValue.serverTimestamp()" }
+      },
+      "required": ["userId", "displayName", "gradeLevel", "themeMode", "createdAt", "updatedAt"]
+    },
+    "Subject": {
+      "title": "Subject",
+      "description": "Academic subject created by a student.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "name": { "type": "string" },
+        "code": { "type": "string" },
+        "teacherName": { "type": "string" },
+        "colorHex": { "type": "integer" },
+        "targetAttendancePercent": { "type": "integer" },
+        "updatedAtMillis": { "type": "integer" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "name", "colorHex", "updatedAtMillis", "createdAt", "updatedAt"]
+    },
+    "Homework": {
+      "title": "Homework",
+      "description": "Homework or assignment entry.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "subjectId": { "type": "string" },
+        "subjectName": { "type": "string" },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "dueAtMillis": { "type": "integer" },
+        "priority": { "type": "string", "enum": ["LOW", "MEDIUM", "HIGH"] },
+        "completed": { "type": "boolean" },
+        "completedAtMillis": { "type": "integer" },
+        "attachmentUri": { "type": "string" },
+        "attachmentLabel": { "type": "string" },
+        "reminderEnabled": { "type": "boolean" },
+        "updatedAtMillis": { "type": "integer" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "subjectId", "title", "dueAtMillis", "priority", "completed", "updatedAtMillis", "createdAt", "updatedAt"]
+    },
+    "Reminder": {
+      "title": "Reminder",
+      "description": "Scheduled smart reminder with repeat and snooze support.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "title": { "type": "string" },
+        "notes": { "type": "string" },
+        "category": { "type": "string", "enum": ["CUSTOM", "HOMEWORK", "ASSIGNMENT", "EXAM", "STUDY_SESSION", "REVISION", "CLASS"] },
+        "priority": { "type": "string", "enum": ["LOW", "MEDIUM", "HIGH"] },
+        "triggerAtMillis": { "type": "integer" },
+        "advanceMinutes": { "type": "integer" },
+        "repeatRule": { "type": "string", "enum": ["NONE", "DAILY", "WEEKLY", "CUSTOM_DAYS"] },
+        "customRepeatDays": { "type": "string" },
+        "status": { "type": "string", "enum": ["UPCOMING", "COMPLETED", "MISSED", "SNOOZED"] },
+        "soundEnabled": { "type": "boolean" },
+        "vibrationEnabled": { "type": "boolean" },
+        "linkedEntityId": { "type": "string" },
+        "updatedAtMillis": { "type": "integer" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "title", "category", "priority", "triggerAtMillis", "repeatRule", "status", "updatedAtMillis", "createdAt", "updatedAt"]
+    },
+    "TimetableSession": {
+      "title": "TimetableSession",
+      "description": "Class, study, or break session in weekly timetable.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "subjectId": { "type": "string" },
+        "subjectName": { "type": "string" },
+        "title": { "type": "string" },
+        "dayOfWeek": { "type": "integer" },
+        "startMinuteOfDay": { "type": "integer" },
+        "endMinuteOfDay": { "type": "integer" },
+        "sessionKind": { "type": "string", "enum": ["CLASS", "STUDY", "BREAK"] },
+        "recurring": { "type": "boolean" },
+        "notifyBeforeMinutes": { "type": "integer" },
+        "location": { "type": "string" },
+        "updatedAtMillis": { "type": "integer" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "title", "dayOfWeek", "startMinuteOfDay", "endMinuteOfDay", "sessionKind", "updatedAtMillis", "createdAt", "updatedAt"]
+    },
+    "Exam": {
+      "title": "Exam",
+      "description": "Scheduled examination or mock test.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "subjectId": { "type": "string" },
+        "subjectName": { "type": "string" },
+        "title": { "type": "string" },
+        "examAtMillis": { "type": "integer" },
+        "importantTopics": { "type": "string" },
+        "preparationStatus": { "type": "string", "enum": ["NOT_STARTED", "IN_PROGRESS", "READY", "COMPLETED"] },
+        "mockTest": { "type": "boolean" },
+        "obtainedScore": { "type": "integer" },
+        "maxScore": { "type": "integer" },
+        "updatedAtMillis": { "type": "integer" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "subjectId", "title", "examAtMillis", "preparationStatus", "updatedAtMillis", "createdAt", "updatedAt"]
+    },
+    "Chapter": {
+      "title": "Chapter",
+      "description": "Syllabus chapter under a subject or exam.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "subjectId": { "type": "string" },
+        "examId": { "type": "string" },
+        "title": { "type": "string" },
+        "orderIndex": { "type": "integer" },
+        "completed": { "type": "boolean" },
+        "difficult": { "type": "boolean" },
+        "revisionCount": { "type": "integer" },
+        "updatedAtMillis": { "type": "integer" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "subjectId", "title", "completed", "difficult", "updatedAtMillis", "createdAt", "updatedAt"]
+    },
+    "RevisionSchedule": {
+      "title": "RevisionSchedule",
+      "description": "Scheduled revision item for a subject and chapter.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "subjectId": { "type": "string" },
+        "subjectName": { "type": "string" },
+        "chapterId": { "type": "string" },
+        "chapterTitle": { "type": "string" },
+        "scheduledAtMillis": { "type": "integer" },
+        "intervalDays": { "type": "integer" },
+        "completed": { "type": "boolean" },
+        "difficult": { "type": "boolean" },
+        "completedAtMillis": { "type": "integer" },
+        "updatedAtMillis": { "type": "integer" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "subjectId", "chapterTitle", "scheduledAtMillis", "intervalDays", "completed", "updatedAtMillis", "createdAt", "updatedAt"]
+    },
+    "StudyNote": {
+      "title": "StudyNote",
+      "description": "Rich study note organized by subject and chapter.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "subjectId": { "type": "string" },
+        "subjectName": { "type": "string" },
+        "chapterName": { "type": "string" },
+        "title": { "type": "string" },
+        "content": { "type": "string" },
+        "important": { "type": "boolean" },
+        "bookmarked": { "type": "boolean" },
+        "attachmentUri": { "type": "string" },
+        "updatedAtMillis": { "type": "integer" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "subjectId", "title", "content", "important", "bookmarked", "updatedAtMillis", "createdAt", "updatedAt"]
+    },
+    "StudySession": {
+      "title": "StudySession",
+      "description": "Completed or logged focus timer session.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "subjectId": { "type": "string" },
+        "subjectName": { "type": "string" },
+        "mode": { "type": "string", "enum": ["POMODORO", "CUSTOM", "SHORT_BREAK", "LONG_BREAK"] },
+        "durationMinutes": { "type": "integer" },
+        "startedAtMillis": { "type": "integer" },
+        "endedAtMillis": { "type": "integer" },
+        "completed": { "type": "boolean" },
+        "updatedAtMillis": { "type": "integer" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "mode", "durationMinutes", "startedAtMillis", "endedAtMillis", "completed", "updatedAtMillis", "createdAt", "updatedAt"]
+    },
+    "Goal": {
+      "title": "Goal",
+      "description": "Daily, weekly, or subject study goal.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "title": { "type": "string" },
+        "subjectId": { "type": "string" },
+        "period": { "type": "string", "enum": ["DAILY", "WEEKLY", "CUSTOM"] },
+        "targetValue": { "type": "integer" },
+        "currentValue": { "type": "integer" },
+        "unit": { "type": "string" },
+        "completed": { "type": "boolean" },
+        "updatedAtMillis": { "type": "integer" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "title", "period", "targetValue", "currentValue", "completed", "updatedAtMillis", "createdAt", "updatedAt"]
+    },
+    "AttendanceRecord": {
+      "title": "AttendanceRecord",
+      "description": "Subject-wise daily attendance entry.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "subjectId": { "type": "string" },
+        "subjectName": { "type": "string" },
+        "dateMillis": { "type": "integer" },
+        "present": { "type": "boolean" },
+        "notes": { "type": "string" },
+        "updatedAtMillis": { "type": "integer" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "subjectId", "dateMillis", "present", "updatedAtMillis", "createdAt", "updatedAt"]
+    },
+    "Flashcard": {
+      "title": "Flashcard",
+      "description": "Question and answer flashcard for active recall.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "subjectId": { "type": "string" },
+        "subjectName": { "type": "string" },
+        "chapterName": { "type": "string" },
+        "question": { "type": "string" },
+        "answer": { "type": "string" },
+        "difficult": { "type": "boolean" },
+        "mastered": { "type": "boolean" },
+        "reviewCount": { "type": "integer" },
+        "updatedAtMillis": { "type": "integer" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "subjectId", "question", "answer", "difficult", "mastered", "updatedAtMillis", "createdAt", "updatedAt"]
+    },
+    "QuizResult": {
+      "title": "QuizResult",
+      "description": "Completed quiz score and performance history.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "subjectId": { "type": "string" },
+        "subjectName": { "type": "string" },
+        "title": { "type": "string" },
+        "correctCount": { "type": "integer" },
+        "totalCount": { "type": "integer" },
+        "takenAtMillis": { "type": "integer" },
+        "updatedAtMillis": { "type": "integer" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "title", "correctCount", "totalCount", "takenAtMillis", "updatedAtMillis", "createdAt", "updatedAt"]
+    },
+    "Achievement": {
+      "title": "Achievement",
+      "description": "Unlocked student milestone or badge.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "code": { "type": "string" },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "unlockedAtMillis": { "type": "integer" },
+        "updatedAtMillis": { "type": "integer" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "code", "title", "unlockedAtMillis", "updatedAtMillis", "createdAt", "updatedAt"]
+    },
+    "AppNotification": {
+      "title": "AppNotification",
+      "description": "In-app notification center entry.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "title": { "type": "string" },
+        "message": { "type": "string" },
+        "category": { "type": "string" },
+        "read": { "type": "boolean" },
+        "timestampMillis": { "type": "integer" },
+        "updatedAtMillis": { "type": "integer" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "title", "message", "category", "read", "timestampMillis", "updatedAtMillis", "createdAt", "updatedAt"]
+    },
+    "StudyGroup": {
+      "title": "StudyGroup",
+      "description": "Collaborative private or invite-based study group.",
+      "type": "object",
+      "properties": {
+        "ownerId": { "type": "string" },
+        "name": { "type": "string" },
+        "subjectTag": { "type": "string" },
+        "description": { "type": "string" },
+        "inviteCode": { "type": "string" },
+        "privateGroup": { "type": "boolean" },
+        "memberUids": { "type": "array" },
+        "memberNames": { "type": "array" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["ownerId", "name", "inviteCode", "privateGroup", "memberUids", "memberNames", "createdAt", "updatedAt"]
+    },
+    "GroupInvite": {
+      "title": "GroupInvite",
+      "description": "Exact-code lookup record for joining a private study group.",
+      "type": "object",
+      "properties": {
+        "inviteCode": { "type": "string" },
+        "groupId": { "type": "string" },
+        "ownerId": { "type": "string" },
+        "groupName": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["inviteCode", "groupId", "ownerId", "groupName", "createdAt", "updatedAt"]
+    },
+    "GroupItem": {
+      "title": "GroupItem",
+      "description": "Shared goal, note, task, or quiz challenge inside a study group.",
+      "type": "object",
+      "properties": {
+        "groupId": { "type": "string" },
+        "authorId": { "type": "string" },
+        "authorName": { "type": "string" },
+        "itemType": { "type": "string", "enum": ["GOAL", "NOTE", "TASK", "QUIZ"] },
+        "title": { "type": "string" },
+        "body": { "type": "string" },
+        "completed": { "type": "boolean" },
+        "score": { "type": "integer" },
+        "memberUids": { "type": "array" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["groupId", "authorId", "authorName", "itemType", "title", "completed", "score", "memberUids", "createdAt", "updatedAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/UserProfile" },
+      "description": "Private student profile and preferences."
+    },
+    "/users/{userId}/subjects/{subjectId}": {
+      "schema": { "$ref": "#/entities/Subject" },
+      "description": "Student subjects."
+    },
+    "/users/{userId}/homework/{homeworkId}": {
+      "schema": { "$ref": "#/entities/Homework" },
+      "description": "Student homework items."
+    },
+    "/users/{userId}/reminders/{reminderId}": {
+      "schema": { "$ref": "#/entities/Reminder" },
+      "description": "Student reminders."
+    },
+    "/users/{userId}/timetable/{sessionId}": {
+      "schema": { "$ref": "#/entities/TimetableSession" },
+      "description": "Weekly timetable sessions."
+    },
+    "/users/{userId}/exams/{examId}": {
+      "schema": { "$ref": "#/entities/Exam" },
+      "description": "Upcoming and completed exams."
+    },
+    "/users/{userId}/chapters/{chapterId}": {
+      "schema": { "$ref": "#/entities/Chapter" },
+      "description": "Chapter-wise syllabus tracking."
+    },
+    "/users/{userId}/revisions/{revisionId}": {
+      "schema": { "$ref": "#/entities/RevisionSchedule" },
+      "description": "Smart revision schedule entries."
+    },
+    "/users/{userId}/notes/{noteId}": {
+      "schema": { "$ref": "#/entities/StudyNote" },
+      "description": "Student study notes."
+    },
+    "/users/{userId}/study_sessions/{sessionId}": {
+      "schema": { "$ref": "#/entities/StudySession" },
+      "description": "Focus timer study sessions."
+    },
+    "/users/{userId}/goals/{goalId}": {
+      "schema": { "$ref": "#/entities/Goal" },
+      "description": "Daily and weekly study goals."
+    },
+    "/users/{userId}/attendance/{recordId}": {
+      "schema": { "$ref": "#/entities/AttendanceRecord" },
+      "description": "Subject-wise attendance records."
+    },
+    "/users/{userId}/flashcards/{cardId}": {
+      "schema": { "$ref": "#/entities/Flashcard" },
+      "description": "Active-recall flashcards."
+    },
+    "/users/{userId}/quiz_results/{resultId}": {
+      "schema": { "$ref": "#/entities/QuizResult" },
+      "description": "Quiz attempt results."
+    },
+    "/users/{userId}/achievements/{achievementId}": {
+      "schema": { "$ref": "#/entities/Achievement" },
+      "description": "Unlocked achievement badges."
+    },
+    "/users/{userId}/notifications/{notificationId}": {
+      "schema": { "$ref": "#/entities/AppNotification" },
+      "description": "Notification center entries."
+    },
+    "/study_groups/{groupId}": {
+      "schema": { "$ref": "#/entities/StudyGroup" },
+      "description": "Collaborative study groups scoped to memberUids."
+    },
+    "/group_invites/{inviteCode}": {
+      "schema": { "$ref": "#/entities/GroupInvite" },
+      "description": "Invite code lookup documents."
+    },
+    "/study_groups/{groupId}/group_items/{itemId}": {
+      "schema": { "$ref": "#/entities/GroupItem" },
+      "description": "Shared group tasks, goals, notes, and quiz challenges."
+    }
+  }
+}
